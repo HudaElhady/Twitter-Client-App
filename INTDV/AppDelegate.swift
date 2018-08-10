@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TwitterKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        startTwitterAPI()
+        setRootViewController()
+        
         return true
     }
 
@@ -41,6 +45,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        return TWTRTwitter.sharedInstance().application(app, open: url, options: options)
+        
+    }
+    
+    func startTwitterAPI() {
+        TWTRTwitter.sharedInstance().start(withConsumerKey:consumerKey, consumerSecret:consumerSecret)
+    }
+    
+    func setRootViewController()  {
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+        if let loginObj = LoginModel().getUser() , loginObj.authToken != nil {
+            //[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            let followersVC = storyboard.instantiateViewController(withIdentifier: "FollowersListNavigationController") as! UINavigationController
+            window?.rootViewController = followersVC
+        }else{
+            let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+            window?.rootViewController = loginVC
+        }
+    }
 
 }
 

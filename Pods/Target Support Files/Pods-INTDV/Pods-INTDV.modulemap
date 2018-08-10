@@ -1,0 +1,6 @@
+framework module Pods_INTDV {
+  umbrella header "Pods-INTDV-umbrella.h"
+
+  export *
+  module * { export * }
+}
