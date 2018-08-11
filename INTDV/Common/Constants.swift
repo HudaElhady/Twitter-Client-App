@@ -12,4 +12,5 @@ let TweetsListURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?cou
 let consumerKey = "7vHyJDHYhbiAjpCXJCXSGgNgi"
 let consumerSecret = "VBtyllDQsFBhJc5x5RIXfWbEOCzmGrFp1eZMloa8FD45UPkDbC"
 let SessionData = "SessionData"
+let BearerTokenURL = "https://cors-anywhere.herokuapp.com/https://api.twitter.com/oauth2/token"
 

@@ -9,10 +9,6 @@
 import UIKit
 import Alamofire
 
-enum Models:Int
-{
-    case Xx = 1
-}
 
 enum ErrorCode:Int
 {
@@ -55,7 +51,6 @@ class ServerManager: NSObject
                 {
                 case .success:
                     let value = response.result.value
-                    //print(value!)
                     let parse = resource.parse
                     let result = value.flatMap(parse)
                     DispatchQueue.main.async
@@ -63,8 +58,6 @@ class ServerManager: NSObject
                             complation(result, value)
                     }
                 case .failure(let error):
-                    //print(error._code)
-                    print(error.localizedDescription)
                     DispatchQueue.main.async
                         {
                             if let errorEnum = ErrorCode(rawValue: error._code)
@@ -80,23 +73,11 @@ class ServerManager: NSObject
         }
         return request
     }
-    
-    func cancelRequest(dataRequest : DataRequest)
-    {
-        dataRequest.cancel()
-    }
-    
-    
+
     // MARK:- Bearer Token
+    // somehow not working with alamofire
     func getBearerToken(completion:@escaping (_ bearerToken: String) ->Void) {
-        let components = NSURLComponents()
-        components.scheme = "https";
-        components.host = "api.twitter.com"
-        components.path = "/oauth2/token";
-        
-        let url1 = "https://cors-anywhere.herokuapp.com/https://api.twitter.com/oauth2/token";
-        
-        let request = NSMutableURLRequest(url:URL(string: url1)!)
+        let request = NSMutableURLRequest(url:URL(string: BearerTokenURL)!)
         
         request.httpMethod = "POST"
         request.addValue("Basic " + getBase64EncodeString(), forHTTPHeaderField: "Authorization")
@@ -104,8 +85,7 @@ class ServerManager: NSObject
         request.addValue("*",  forHTTPHeaderField:"Access-Control-Allow-Origin")
          request.addValue("XMLHttpRequest",  forHTTPHeaderField:"X-Requested-With")
         let grantType =  "grant_type=client_credentials"
-        request.httpBody = grantType.data(using: String.Encoding.utf8)//.data(using: String.Encoding.utf8, allowLossyConversion: true)
-        
+        request.httpBody = grantType.data(using: String.Encoding.utf8)
         URLSession.shared .dataTask(with: request as URLRequest, completionHandler: { (data: Data?, response:URLResponse?, error: Error?) -> Void in
             
             do {
@@ -118,9 +98,9 @@ class ServerManager: NSObject
                 print(error.localizedDescription)
             }
         }).resume()
-        
-   
     }
+    
+    
     // MARK:- base64Encode String
     
     func getBase64EncodeString() -> String {
